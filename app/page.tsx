@@ -62,6 +62,21 @@ const steps = [
   }
 ];
 
+const formatDateInputValue = (date: Date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
+
+const getTomorrowDateInputValue = () => {
+  const date = new Date();
+  date.setDate(date.getDate() + 1);
+
+  return formatDateInputValue(date);
+};
+
 const reviews = [
   {
     text: "我家狗子很怕吹风，美容师会分段安抚，洗完不炸毛也不紧张。",
@@ -79,6 +94,8 @@ const reviews = [
 
 export default function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
+  const [expectedDate, setExpectedDate] = useState("");
+  const [expectedTime, setExpectedTime] = useState("11:00");
   const [submitted, setSubmitted] = useState(false);
 
   const showSlide = (index: number) => {
@@ -90,6 +107,10 @@ export default function Home() {
     setSubmitted(true);
     window.setTimeout(() => setSubmitted(false), 2600);
   };
+
+  useEffect(() => {
+    setExpectedDate(getTomorrowDateInputValue());
+  }, []);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -144,17 +165,24 @@ export default function Home() {
                 </div>
                 <div className="form-grid">
                   <div className="field">
-                    <label htmlFor="date">到店日期</label>
-                    <input id="date" name="date" type="date" />
+                    <label htmlFor="date">期望到店日期</label>
+                    <input
+                      id="date"
+                      name="date"
+                      type="date"
+                      value={expectedDate}
+                      onChange={(event) => setExpectedDate(event.target.value)}
+                    />
                   </div>
                   <div className="field">
-                    <label htmlFor="time">时间段</label>
-                    <select id="time" name="time" defaultValue="10:00 - 12:00">
-                      <option>10:00 - 12:00</option>
-                      <option>13:00 - 15:00</option>
-                      <option>15:00 - 17:00</option>
-                      <option>17:00 - 19:00</option>
-                    </select>
+                    <label htmlFor="time">到店时间</label>
+                    <input
+                      id="time"
+                      name="time"
+                      type="time"
+                      value={expectedTime}
+                      onChange={(event) => setExpectedTime(event.target.value)}
+                    />
                   </div>
                 </div>
                 <div className="field">
